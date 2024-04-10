@@ -1,0 +1,71 @@
+[gd_scene load_steps=11 format=3 uid="uid://cykfcg506dxbr"]
+
+[ext_resource type="Script" path="res://Scripts/Player/player.gd" id="1_f87ho"]
+[ext_resource type="Texture2D" uid="uid://k8wfdjfcmtwm" path="res://icon.svg" id="1_lkf0j"]
+[ext_resource type="Script" path="res://Scripts/Components/machine_state.gd" id="2_8tlj6"]
+[ext_resource type="Script" path="res://Scripts/Components/health.gd" id="3_jao8t"]
+[ext_resource type="Script" path="res://Scripts/Player/States/Move.gd" id="3_kwniv"]
+[ext_resource type="Script" path="res://Scripts/Components/weapon.gd" id="4_0ddt8"]
+[ext_resource type="Script" path="res://Scripts/Player/States/idle.gd" id="4_uw5kx"]
+[ext_resource type="Script" path="res://Scenes/Player/InputComponent.gd" id="8_6jwce"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dcffs"]
+radius = 17.5287
+height = 35.0575
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_y0ff8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_lkf0j")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_f87ho")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(3.48, 3.48)
+shape = SubResource("CapsuleShape2D_dcffs")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+
+[node name="MachineState" type="Node" parent="." node_paths=PackedStringArray("starting_state")]
+unique_name_in_owner = true
+script = ExtResource("2_8tlj6")
+starting_state = NodePath("Idle")
+
+[node name="Move" type="Node" parent="MachineState"]
+unique_name_in_owner = true
+script = ExtResource("3_kwniv")
+
+[node name="Idle" type="Node" parent="MachineState"]
+unique_name_in_owner = true
+script = ExtResource("4_uw5kx")
+animation_name = null
+move_speed = null
+
+[node name="Health" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_jao8t")
+max_value = 200.0
+
+[node name="Weapon" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_0ddt8")
+damage = 10.0
+
+[node name="Animations" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+sprite_frames = SubResource("SpriteFrames_y0ff8")
+
+[node name="InputComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("8_6jwce")
+
+[connection signal="die_signal" from="Health" to="." method="_on_health_die_signal"]

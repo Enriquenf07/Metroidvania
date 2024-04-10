@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3 uid="uid://y8scq4cdmmly"]
+
+[ext_resource type="Shader" path="res://Assets/shaders/shader1.gdshader" id="1_rlre3"]
+[ext_resource type="Script" path="res://Scenes/Main/enemy.gd" id="1_w6ck2"]
+[ext_resource type="Texture2D" uid="uid://k8wfdjfcmtwm" path="res://icon.svg" id="2_08hti"]
+[ext_resource type="Script" path="res://Scenes/Main/enemy_health.gd" id="4_6x51m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w47bs"]
+shader = ExtResource("1_rlre3")
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yb0lf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_08hti")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yk21h"]
+radius = 16.0
+height = 38.0
+
+[node name="Enemy" type="CharacterBody2D"]
+scale = Vector2(2.19445, 2.19445)
+script = ExtResource("1_w6ck2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_w47bs")
+scale = Vector2(0.273409, 0.273409)
+sprite_frames = SubResource("SpriteFrames_yb0lf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_yk21h")
+
+[node name="Health" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_6x51m")
+max_value = 100.0
+
+[connection signal="die_signal" from="Health" to="." method="_on_health_die_signal"]
